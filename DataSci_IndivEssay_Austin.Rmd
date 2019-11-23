@@ -1,0 +1,510 @@
+---
+title: <center> BS3033 Data Science for Biologists <br> Individual Essay </center>
+author: "Austin Chia Cheng En (U1740366A) <br> http://rpubs.com/austinchia"
+output:
+    rmdformats::readthedown:
+      highlight: kate
+      code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+![](/Users/austinchia/Downloads/BS3033 Data Sci/statistics.png)
+
+# The Importance of Effective Data Visualisation in Data Analysis
+</center>
+
+***
+# I. Introduction
+
+With the exponential growth of data in this digital age, arises a great need for insightful data analysis. Along with this increase in demand for data to be processed and made sense of, comes the pressing need for the information to be communicated and presented in an effective manner. As much as there is importance on the handling of data, data visualizations that correctly and effectively represent data-driven insights are crucial to making scientific conclusions or business decisions.
+
+Data Visualisation involves the graphic representation of datasets to simplify or enhance understanding. Previously only available in several basic types of visualisation or to a limited number of datasets, many software programmes and packages now offer a multitude of innovative and interactive alternatives to the simple visualizations in the past. With the spread of increasingly accessible datasets and free access data analysis software packages, there is a question of the proper use of appropriate visualisations that offer a good balance of both form and function^1^.
+
+Effective data visualization requires both form and function. However, with the over-emphasis on the form, the visualization can potentially lead to the loss of its original function - conveying information. Careful considerations have to be made when presenting such visualization to avoid pitfalls of erroneous conclusions. This technical essay will outline the major types of visualizations, potential pitfalls of incorrectly used data visualization and some recommendations to avoid these pitfalls.
+
+<br>
+
+# II. Main Types of Visualizations 
+
+## 1. Univariate graphs
+
+Univariate graphs visualise data distributions from a single variable. The single variable can either be categorical or quantitative. For example, categorical variables include race and sex and quantitative variables include age and weight.
+
+### a) Categorical graphs
+
+Distributions of categorical variables are usually plotted using a bar chart, a pie chart, or a treemap. An example of a bar chart using the in-built `mtcars` dataset is shown below.
+
+
+```{r bar graph hide, include=FALSE}
+# Simple Bar Plot
+counts_bar <- table(mtcars$gear)
+```
+
+```{r bar graph show, eval=FALSE, include=TRUE}
+counts_bar <- table(mtcars$gear)
+barplot(counts_bar, main="Car Distribution",
+   xlab="Number of Gears")
+```
+
+#### Bar graph plot example:
+```{r bar plot, echo=FALSE}
+barplot(counts_bar, main="Car Distribution",
+   xlab="Number of Gears")
+```
+
+### b) Quantitative graphs
+
+Distributions of quantitative variables are usually plotted as histograms, kernel density plots, or dot plots. An example of a histogram of the `mtcars` dataset using the `hist` function is shown below.
+
+```{r hist code, eval=FALSE}
+hist(mtcars$mpg)
+```
+
+#### Hist graph plot example:
+```{r hist plot, echo=FALSE}
+hist(mtcars$mpg)
+```
+
+## 2. Bivariate graphs
+
+### a) Categorical vs. Categorical
+
+To represent relationships between two categorical variables, several types of bar charts can be used. Some possible bar charts include stacks, grouped, or segmented bar charts. Another possible way to plot such relationships is through the mosaic chart. An example of a stacked bar chart of the `mtcars` dataset using the `barplot` function is shown below.
+
+```{r stacked bar graph hide, include=FALSE}
+counts_stacked <- table(mtcars$vs, mtcars$gear)
+```
+
+
+```{r stacked bar chart code, include=TRUE, eval=FALSE}
+counts_stacked <- table(mtcars$vs, mtcars$gear)
+
+barplot(counts_stacked, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+  legend = rownames(counts_stacked))
+```
+
+#### Stacked bar graph plot example:
+```{r stacked bar plot, echo=FALSE}
+barplot(counts_stacked, main="Car Distribution by Gears and VS",
+  xlab="Number of Gears", col=c("darkblue","red"),
+  legend = rownames(counts_stacked))
+```
+
+### b) Quantitative vs. Quantitative
+
+For the plotting of a relationship between two quantitative variables, scatterplots and line graphs are common visualizations used. An example of a scatterplot of the `Car weight` against `Miles Per Gallon`, using the `plot` function, is shown below.
+
+```{r include=FALSE}
+attach(mtcars)
+```
+
+```{r scatterplot code, include=TRUE, eval=FALSE}
+plot(wt, mpg, main="Car Weight against Miles Per Gallon",
+   xlab="Car Weight ", ylab="Miles Per Gallon ", pch=19)
+```
+
+#### Scatterplot example:
+```{r scatter plot, echo=FALSE}
+plot(wt, mpg, main="Scatterplot Example",
+   xlab="Car Weight ", ylab="Miles Per Gallon ", pch=19)
+```
+
+### c) Categorical vs. Quantitative
+
+When considering relationships between a categorical variable and a quantitative variable, a broad selection of graphs can be used. These include bar charts using summary statistics, grouped kernel density plots, side-by-side box plots, side-by-side violin plots, mean/sem plots, ridgeline plots, and Cleveland plots. An example of a boxplot using the `boxplot` function of the `mtcars` dataset is shown below.
+
+```{r boxplot code, include=TRUE, eval=FALSE}
+boxplot(mpg~cyl,data=mtcars, main="Car Milage Data",
+   xlab="Number of Cylinders", ylab="Miles Per Gallon")
+```
+
+#### Boxplot example:
+```{r box plot, echo=FALSE}
+boxplot(mpg~cyl,data=mtcars, main="Car Milage Data",
+   xlab="Number of Cylinders", ylab="Miles Per Gallon")
+```
+
+## 3. Multivariate graphs
+
+Multivariate graphs can represent the relationship between three or more variables in a single graph. Grouping and faceting are the most common methods of visualization. Grouping involves the first two variables as the x and y axes respectively. Any additional variables are assigned to several other possible characteristics such as size, shape, transparency and color. An example of grouping of the relationship between `yrs.since.phd` and `salary` of the `Salaries` dataset is shown below.
+
+```{r grouping code hide, include=FALSE}
+library(ggplot2)
+data(Salaries, package="carData")
+
+# plot experience vs. salary
+ggplot(Salaries, 
+       aes(x = yrs.since.phd, 
+           y = salary)) +
+  geom_point() + 
+  labs(title = "Academic salary by years since degree")
+```
+
+```{r grouping code show, include=TRUE, eval=FALSE}
+library(ggplot2)
+data(Salaries, package="carData")
+
+# plot experience vs. salary
+ggplot(Salaries, 
+       aes(x = yrs.since.phd, 
+           y = salary)) +
+  geom_point() + 
+  labs(title = "Academic salary by years since degree")
+```
+
+#### Grrouping example:
+```{r grouping plot, echo=FALSE}
+library(ggplot2)
+data(Salaries, package="carData")
+
+# plot experience vs. salary
+ggplot(Salaries, 
+       aes(x = yrs.since.phd, 
+           y = salary)) +
+  geom_point() + 
+  labs(title = "Academic salary by years since degree")
+```
+
+## 4. Other graphs
+
+Other graphs used in data visualisation include time-dependent graphs, plots for statistical models as well as graphs for specific, miscellaneous use. These plots will not be discussed here.
+
+<br>
+
+# III. Potential pitfalls of incorrectly used data visualisation
+
+In this section, the possible pitfalls caused by the inappropriate use of data visualisation will be discussed.
+
+## 1. Visualizations of Significance Testing
+
+### a) Data dimensionality in Distribution Visualization
+
+The p-value has been the default statistical test to prove significance among many scientists. However, the p-value has recently been debunked as providing limited information about true significance, leading to misinterpretation. Without the use of p-values, effect sizes of studies will require a different type of test to be validated. Currently, in a large number of scientific literature, data visualisations have been using several common ways to “hide” important details of unwanted data.  One commonly overused graph used among researchers is the boxplot, for its use to compare categorical variables. Although a robust plot, a boxplot graph provides limited information on the true distribution of the variables. A solution to this problem of data dimensionality will be highlighted in the recommendations later^2^.
+
+## 2. Visualizations of Biological data
+
+### a) Multi-Set Intersections
+
+A common issue with the complexity of biological data is the presence of multi-set intersections among variables. Use of sets for classification into distinct objects is essential for a proper understanding of relationships between two or more objects. Typically seen in cancer gene sets, the interconnectivity of biological data is essential and of biological importance to the data. Thus, there is a need for these intersections within biological data to be appropriately and effectively represented in data visualization to retain their significance. Currently, most biologists resort to Venn diagrams from the VennDiagram package in R to represent such data. An example of a Venn diagram is shown below.
+
+There are several shortcomings to Venn diagrams, which will be discussed below.
+
+Firstly, Venn diagrams are only able to plot data intersections to a point when the physical naked eye can pinpoint. Essentially, there is a limit to the number of multi-set intersections the Venn diagram can represent accurately.
+
+Secondly, Venn diagrams, being heavily dependent on physical observations for interpretation, can be misleading. In biological processes, expressions and repressions of genes (through upregulation or downregulation) can be potentially wrongly represented. 
+
+Therefore, there is a need for biologists and scientists working on data with multi-set intersections to adopt an appropriate, yet effective data visualisation method.
+
+<br>
+
+# IV. Alternative visualisation recommendations
+
+With the advancement of technology and the increasingly accessible network of programming tools over the past few years, some developers have developed and designed new data visualisation alternatives to present data more effectively.
+
+## Recommendations for Significance Testing
+
+Within the area of significance testing, several solutions have been devised to improve quantitative displays which provide complex visual reasoning. Data visualisations within this area are constantly evolving according to statistical needs. Below are some of the recommended recent alternatives to better represent data in significance testing.
+
+### 1. Estimation plots
+
+Firstly, estimation plots can be used in place of the simple boxplot. It provides an intuitive display of complete and correct statistical information in accordance to the dataset. The estimation plot was developed in response to the need for a better statistically appropriate reform to the null-hypothesis significance testing (NHST) used over the past 75 years among statisticians and data scientists. An estimation plot uses the difference in means to determine effect size among dichotomous group testing. It uses the 95% confidence interval (CI), which is displayed in the plot.
+
+This provides greater statistical insight than the traditional NHST plots in two aspects. Firstly, the traditional bar chart would obscure any observed values by only visualising the means and width of errors. Secondly, traditional NHST plots typically used in publications and literature only indicate the test result as a p-values or even a star. There is a lack of representation of the null distribution. Such concealment of the entirety of data is is a common oversight among many users. Users can exploit this by potentially diverting attention away from quantification of effect size, and to viewing the t-testing as an accept/reject dichotomy. 
+
+Estimation plots provide more than one benefit over the typical testing. Some of these include; greater transparency through the difference axis, more predictable testing than p-values by using 95% CI testing, precision brought by the 95% CI, shifting away from the dichotomous perspective using the full sampling-error curve and lastly, the focus on plausible effect size quantification^3^.
+
+Data Analysis with Bootstrap-coupled ESTimation (DABEST) is an example of a freely accessible package of estimation plots. It is available in open-source libraries in Matlab, Python and R.
+
+An example of an estimation plot implementation in R, using the `dabestR` package, is shown below. A toy dataset is created for demonstration purposes.
+
+```{r dabestR creating fake dataset, eval=TRUE, message=FALSE}
+library(dplyr)
+library(dabestr)
+
+set.seed(54321)
+
+N = 40
+c1 <- rnorm(N, mean = 100, sd = 25)
+c2 <- rnorm(N, mean = 100, sd = 50)
+g1 <- rnorm(N, mean = 120, sd = 25)
+g2 <- rnorm(N, mean = 80, sd = 50)
+g3 <- rnorm(N, mean = 100, sd = 12)
+g4 <- rnorm(N, mean = 100, sd = 50)
+gender <- c(rep('Male', N/2), rep('Female', N/2))
+id <- 1: N
+
+
+wide.data <- 
+  tibble::tibble(
+    Control1 = c1, Control2 = c2,
+    Group1 = g1, Group2 = g2, Group3 = g3, Group4 = g4,
+    Gender = gender, ID = id)
+
+my.data   <- 
+  wide.data %>%
+  tidyr::gather(key = Group, value = Measurement, -ID, -Gender)
+
+two.group.unpaired <- 
+  my.data %>%
+  dabest(Group, Measurement, 
+         # The idx below passes "Control" as the control group, 
+         # and "Group1" as the test group. The mean difference
+         # will be computed as mean(Group1) - mean(Control1).
+         idx = c("Control1", "Group1"), 
+         paired = FALSE)
+```
+
+``` {r dabestR creating 2, eval=FALSE}
+plot(two.group.unpaired, color.column = Gender)
+```
+
+#### Example of dabestR plot:
+```{r dabestR plot, echo=FALSE}
+plot(two.group.unpaired, color.column = Gender)
+```
+
+As shown in the plot above, the dabest estimation plot provides much more detail about the mean differences and the null distribution. This form of visualisation can potentially provide more insight and convey more effective information.
+
+
+### 2. Violin-wrapped boxplots
+
+Similarly to estimation plots, violin-wrapped boxplots are another alternative to replace the currently concealing displays of bar plots. As you can see in the violin-wrapped boxplots below, more information regarding the shape of the distribution is displayed. This allows the user to discover and present overlays of descriptive and inferential statistics^4^.
+
+A violin-wrapped plot is made using the `ggplot2` package in R, using the `ggplot` function. The `ToothGrowth` in-built dataset was used in this plot.
+
+Data preparation
+```{r violin plot code, eval=TRUE}
+# Convert the variable dose from a numeric to a factor variable
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+```
+
+Plotting the visualisation
+```{r violin hide, eval=FALSE}
+library(ggplot2)
+ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_violin() + geom_boxplot(width=0.1)
+```
+
+#### Violin-wrapped plot example
+```{r violin plot, echo=FALSE}
+library(ggplot2)
+ggplot(ToothGrowth, aes(x=dose, y=len)) + 
+  geom_violin() + geom_boxplot(width=0.1)
+```
+
+As shown in the violin-wrapped boxplot provides more insight on the distribution of the 3 different doses. This can help to detect any concealed bimodal distributions or anomalies. This can be done by adding the `geom_boxplot` function to the `ggplot` function.
+
+### 3. Beanplots
+
+Another possible alternative plot in place of boxplots are beanplots. Boxplots are usually not easily explainable and understandable to non-mathematicians or non-statistically trained viewers. Boxplots also do not reveal any duplicate measurements or bimodal distributions that may be present in the data. These issues are resolved through the use of a beanplot^5^.
+
+An implementation of beanplots to reveal bimodal distribution in data in comparison to boxplots is shown below. The in-built dataset `OrchardSprays` was used in these plots. The function `beanplot` was used to plot the beanplots.
+
+```{r bean plot code}
+library(beanplot)
+
+par(mfrow = c(1,2))
+```
+
+```{r bean hide, eval=FALSE, message=FALSE}
+boxplot(decrease ~ treatment, data = OrchardSprays,
+        log = "y", col = "bisque", ylim = c(1,200))
+beanplot(decrease ~ treatment, data = OrchardSprays,
+         col = "bisque", ylim = c(1,200))
+```
+
+#### Boxplot VS Beanplot example
+```{r bean plot, echo=FALSE, message=FALSE, out.width=c('50%', '50%'), fig.show='hold'}
+boxplot(decrease ~ treatment, data = OrchardSprays,
+        log = "y", col = "bisque", ylim = c(1,200))
+beanplot(decrease ~ treatment, data = OrchardSprays,
+         col = "bisque", ylim = c(1,200))
+```
+
+As shown in the bar plots and bean plots above on the same data variables, the beanplot provides more details and shape of the distribution, revealing concealed information that the boxplot hides.
+
+The `beanplot` package in R is available for open-access from the Comprehensive R Archive Network (CRAN) at http://CRAN.R-project.org/package=beanplot.
+
+## Recommendations for Biological data
+
+Due to the complex nature of biological data, it is often difficult to display visualisations without losing biological importance. Due to the lack of feasibility of Venn diagrams of more than 5 sets, there is a need for alternatives to present data with a large number of sets. In place of the traditional Venn diagram, some alternative recommendations have been developed for the purpose of better visualising multi-set intersections commonly found in biological data. 
+
+### 1. `SuperExactTest` Package
+
+As an alternative to the Venn diagram, the plots from the SuperExactTest have been developed to appropriately show relationships and intersections between sets of data^6^. 
+
+An implementation of a plot from the `SuperExactTest` is shown below. The `letters` dataset was chosen for this plot. The `SuperExactTest` package was used in this implementation and the `supertest` function was called to plot the graph.
+
+```{r super code, message=FALSE}
+library(SuperExactTest)
+x <- list(S1 = letters[1:20], S2 = letters[10:26], S3 = sample(letters, 10), S4 = sample(letters, 10))
+obj <- supertest(x, n = 26)
+```
+```{r super no run, eval=FALSE}
+plot(obj)
+```
+
+#### `SuperExactTest` plot example
+```{r super plot, echo=FALSE}
+plot(obj)
+```
+
+As shown in the `SuperExactTest` plot above, the 4 different tracks labelled 1, 2, 3 and 4 are the 4 different sets. Green blocks represents presence and grey blocks represent absence of intersection. The height of the bars on the outer layer shows the proportion of intersection sizes and their colour intensity represents the p-value significance of the intersections. This plot can also potentially be used in showing multi-set intersections of overlapping genes.
+
+`SuperExactTest` is available in R, on CRAN. It is an R package for statistical testing and visualization of multi-set intersections.
+
+### 2. `UpSetR` Package
+
+An additional recommendation in place of Venn diagrams is the Upset plot provides an alternative option for visualising multi-set intersections. An Upset plot focuses on plotting task-driven aggregates as well as a right balance between appropriate element visualisation and their set membership. Multi-set intersections are presented in a matrix layout, to allowing aggregation of based on common properties or boolean queries. The matrix graphical method allows the effective representation of number of elements, aggregates and intersections. The size of an intersection is displayed using bars aligned to the rows of the matrix. Additionally, summary statistics of subsets and elements are shown. Due to its design, it overcomes the geometric restriction of a traditional Venn diagram^7^.
+
+An implementation of the Upset plot was done on biological data taken from the Banana genome. The `UpSetR` package was used in this visualisation and the `upset` function was called to plot the graph.
+
+```{r upset plot code, message=FALSE, include=FALSE}
+# Specific library
+library(UpSetR)
+
+# Dataset
+input <- c(
+  M.acuminata = 759,
+  P.dactylifera = 769,
+  A.thaliana = 1187,
+  O.sativa = 1246,
+  S.bicolor = 827,
+  B.distachyon = 387,
+  "P.dactylifera&M.acuminata" = 467,
+  "O.sativa&M.acuminata" = 29,
+  "A.thaliana&O.sativa" = 6,
+  "S.bicolor&A.thaliana" = 9,
+  "O.sativa&P.dactylifera" = 32,
+  "S.bicolor&P.dactylifera" = 49,
+  "S.bicolor&M.acuminata" = 49,
+  "B.distachyon&O.sativa" = 547,
+  "S.bicolor&O.sativa" = 1151,
+  "B.distachyon&A.thaliana" = 10,
+  "B.distachyon&M.acuminata" = 9,
+  "B.distachyon&S.bicolor" = 402,
+  "M.acuminata&A.thaliana" = 155,
+  "A.thaliana&P.dactylifera" = 105,
+  "B.distachyon&P.dactylifera" = 25,
+  "S.bicolor&O.sativa&P.dactylifera" = 42,
+  "B.distachyon&O.sativa&P.dactylifera" = 12,
+  "S.bicolor&O.sativa&B.distachyon" = 2809,
+  "B.distachyon&O.sativa&A.thaliana" = 18,
+  "S.bicolor&O.sativa&A.thaliana" = 40,
+  "S.bicolor&B.distachyon&A.thaliana" = 14,
+  "O.sativa&B.distachyon&M.acuminata" = 28,
+  "S.bicolor&B.distachyon&M.acuminata" = 13,
+  "O.sativa&M.acuminata&P.dactylifera" = 35,
+  "M.acuminata&S.bicolor&A.thaliana" = 21,
+  "B.distachyon&M.acuminata&A.thaliana" = 7,
+  "O.sativa&M.acuminata&A.thaliana" = 13,
+  "M.acuminata&P.dactylifera&A.thaliana" = 206,
+  "P.dactylifera&A.thaliana&S.bicolor" = 4,
+  "O.sativa&A.thaliana&P.dactylifera" = 6,
+  "S.bicolor&O.sativa&M.acuminata" = 64,
+  "S.bicolor&M.acuminata&P.dactylifera" = 19,
+  "B.distachyon&A.thaliana&P.dactylifera" = 3,
+  "B.distachyon&M.acuminata&P.dactylifera" = 12,
+  "B.distachyon&S.bicolor&P.dactylifera" = 23,
+  "M.acuminata&B.distachyon&S.bicolor&A.thaliana" = 54,
+  "P.dactylifera&S.bicolor&O.sativa&M.acuminata" = 62,
+  "B.distachyon&O.sativa&M.acuminata&P.dactylifera" = 18,
+  "S.bicolor&B.distachyon&O.sativa&A.thaliana" = 206,
+  "B.distachyon&M.acuminata&O.sativa&A.thaliana" = 29,
+  "O.sativa&M.acuminata&A.thaliana&S.bicolor" = 71,
+  "M.acuminata&O.sativa&P.dactylifera&A.thaliana" = 28,
+  "B.distachyon&M.acuminata&O.sativa&A.thaliana" = 7,
+  "B.distachyon&S.bicolor&P.dactylifera&A.thaliana" = 11,
+  "B.distachyon&O.sativa&P.dactylifera&A.thaliana" = 5,
+  "A.thaliana&P.dactylifera&S.bicolor&O.sativa" = 21,
+  "M.acuminata&S.bicolor&P.dactylifera&A.thaliana" = 23,
+  "M.acuminata&B.distachyon&S.bicolor&P.dactylifera" = 24,
+  "M.acuminata&O.sativa&S.bicolor&B.distachyon" = 368,
+  "P.dactylifera&B.distachyon&S.bicolor&O.sativa" = 190,
+  "P.dactylifera&B.distachyon&S.bicolor&O.sativa&A.thaliana" = 258,
+  "P.dactylifera&M.acuminata&S.bicolor&B.distachyon&O.sativa" = 685,
+  "M.acuminata&S.bicolor&B.distachyon&O.sativa&A.thaliana" = 1458,
+  "S.bicolor&M.acuminata&P.dactylifera&O.sativa&A.thaliana" = 149,
+  "B.distachyon&M.acuminata&P.dactylifera&O.sativa&A.thaliana" = 80,
+  "M.acuminata&S.bicolor&B.distachyon&P.dactylifera&A.thaliana" = 113,
+  "M.acuminata&S.bicolor&B.distachyon&P.dactylifera&O.sativa&A.thaliana" = 7674
+)
+```
+
+```{r upset no run, eval=FALSE}
+# Plot
+upset(fromExpression(input), 
+      nintersects = 40, 
+      nsets = 6, 
+      order.by = "freq", 
+      decreasing = T, 
+      mb.ratio = c(0.6, 0.4),
+      number.angles = 0, 
+      text.scale = 1.1, 
+      point.size = 2.8, 
+      line.size = 1
+      )
+```
+
+#### Upset plot example:
+```{r upset plot, echo=FALSE}
+# Plot
+upset(fromExpression(input), 
+      nintersects = 40, 
+      nsets = 6, 
+      order.by = "freq", 
+      decreasing = T, 
+      mb.ratio = c(0.6, 0.4),
+      number.angles = 0, 
+      text.scale = 1.1, 
+      point.size = 2.8, 
+      line.size = 1
+      )
+```
+
+The total sizes of each set is represented on the barplots on the left. All possible intersections are represented in the bottom plot, with their frequency shown on the top barplot. Linkages between the dots show intersection between the different sets. This visualisation reatains the same amount of information even with more than 3 sets, which enables it to surpass and cover the weakness of the traditional Venn diagram.
+
+The Upset plot is available on R through the `UpSetR` package on CRAN.
+
+<br>
+
+# V. Limitations
+
+With the advent of many useful and effective packages promising better visualisations for complex data, there are definitely limitation to deviating away from the traditional graphs.
+
+Firstly, having new packages would indicate the limitation of accessibility of such visualisation only to trained users. As most of the recommendations provided require at least a basic knowledge of a scripting language (e.g Python, R), the new effective plots may not be accessible to the lay-user without a technical background.
+
+Secondly, most of the recommendations provided have some degree of additional complexity. This might contribute to further confusion, causing the visualisation to be unintuitive. In such cases, careful use of such plot packages should be done, where ample explanation and description should be highlighted alongside the display of the plots.
+
+<br>
+
+# VI. Conclusion
+
+In conclusion, data visualization is as equally important as the analysis process. Without proper, effective presentation of datasets through visualization, many insights that carry significance can be lost. Depending on the types of data, different appropriate visualizations must be chosen to suit the purpose and structure of the data. Potential pitfalls of incorrect use will result in false conclusions in the areas of significance testing as well as complex biological data. Through the recommendations provided, this technical essay aims to achieve greater awareness for proper representation of data within these areas, given the unavoidable limitations. 
+
+With great data visualisation, comes great responsibility. Handle visualisations with caution. 
+
+Thank you for reading this essay. This technical essay was written by Austin Chia Cheng En on R markdown, in R. A copy of this essay can be accessed on RPubs, at: http://rpubs.com/austinchia/essay_datavis
+
+***
+
+# References
+
+1. Dietrich D, Myrttinen H. European Public Sector Information Platform Topic Report No. 2012 / 05. EPSI Platform Data Visualization. 2012 May [accessed 2019 Nov 23].
+
+2. Halsey LG. The reign of the p -value is over: what alternative analyses could we employ to fill the power vacuum? Biology Letters. 2019;15(5):20190174. doi:10.1098/rsbl.2019.0174
+
+3. Ho J, Tumkaya T, Aryal S, Choi H, Claridge-Chang A. Moving beyond P values: Everyday data analysis with estimation plots. 2018. doi:10.1101/377978
+
+4. Kampstra P. Beanplot: A Boxplot Alternative for Visual Comparison of Distributions. Journal of Statistical Software. 2008 Nov 10.
+
+5. Allen EA, Erhardt EB, Calhoun VD. Data Visualization in the Neurosciences: Overcoming the Curse of Dimensionality. Neuron. 2012;74(4):603–608. doi:10.1016/j.neuron.2012.05.001
+
+6. Wang M, Zhao Y, Zhang B. Efficient Test and Visualization of Multi-Set Intersections. Scientific Reports. 2015;5(1). doi:10.1038/srep16923
+
+7. Lex A, Gehlenborg N, Strobelt H, Vuillemot R, Pfister H. UpSet: Visualization of Intersecting Sets. IEEE Transactions on Visualization and Computer Graphics. 2014;20(12):1983–1992. doi:10.1109/tvcg.2014.2346248
